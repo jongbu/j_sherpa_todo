@@ -60,19 +60,34 @@ var userID = parseInt(req.params.id);
 });
 
 
-app.post('/login', function (req, res) { 
+app.post('/sent', function (req, res) { 
 	var m=req.body.message;
 	console.log(m);
 	messages.push(m);
 
-	//inserting it in the database 
-	db.any('INSERT INTO todo(message) values ($1)',m);
-	concate+="<div class=\"alert alert-info\">"+
+	//searching if the message is repeated if not initialize to zero
+	db.any('SELECT count from todo where message=$1',m).then(function (data) {
+	 if(data!==null){
+		db.any('Update todo set count=count+1 where message=$1',m);
+	}
+	else{
+		db.any('INSERT INTO todo(message,count) values ($1,0)',m);//inserting it in the database 
+		concate+="<div class=\"alert alert-info\">"+
 			m+"</div>";
-	res.render('index',{mes:concate});
-	console.log("This is a post request");
+		res.render('index',{mes:concate});
+		console.log("Message Pushed");
+	}
+	 })
+ 	.catch(function (err) {
+ 	return next(err);
+ });
+
 	
 	});
+
+	
+	
+	
 
 app.listen(3000, function () {   
 	console.log('Inspiration app listening on port 3000!'); });
