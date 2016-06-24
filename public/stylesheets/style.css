@@ -1,6 +1,4 @@
 body{
-    background-image: url("http://thumbs.dreamstime.com/x/de-textuur-van-het-praatje-13260838.jpg");
-    background-repeat: repeat;
 }
 #wrapper{
     padding:3%;
@@ -8,7 +6,7 @@ body{
 }
 
 .jumbotron{
-    height:400px;
+    height:350px;
     border-style: solid;
     border-color:black;
     border-width: 5px;
@@ -35,15 +33,21 @@ li a {
     text-decoration: none;
 }
 
-li a:hover {
+li a:hover:not(.active) {
     background-color: #111;
 }
 
-.footer {
+#footer {
     width: 100%;
     padding-top: 1%;
     background-color: black;
-    position: absolute;
-    bottom: 0;
+    background-color: #1E90FF;
     height: 60px;
+}
+
+.nav{
+    background-color: #1E90FF;
+    height:8%;
+    margin:auto;
+    padding:1%;
 }

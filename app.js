@@ -23,96 +23,57 @@ app.use(bodyp.urlencoded({extend: true}));
 
 
 //loading the root 
-app.get('/', function (req, res) {   
-	db.query('SELECT message from chats').then(function (data) {
-		res.render('index',{chats:data});
+app.get('/', function (req, res, next) {  
+	db.any('SELECT message FROM keywords where date=current_date GROUP BY message ORDER BY COUNT(*) DESC limit 5')
+		.then(function (data1) {
+			db.query('SELECT message from chats where date=current_date').then(function (data2) {
+		res.render('index',{mes:data1,chats:data2});
+
+		}).catch(function (err) {
+	 	return next(err);
+	}).catch(function (err) {
+	 return next(err);
+	 })
+	});
+});
+
+//to get chats from past 
+app.post('/query', function (req, res) {   
+	var d=req.body.qdate;
+		db.any('SELECT message FROM keywords where date=$1 GROUP BY message ORDER BY COUNT(*) DESC limit 5',d)
+			.then(function (data1) {
+				db.query('SELECT message from chats where date=$1',d).then(function (data2) {
+			res.render('index',{mes:data1,chats:data2});
+
+			}).catch(function (err) {
+		 	return next(err);
+		}).catch(function (err) {
+		 return next(err);
+		 })
 		});
-	/*
-	db.any('SELECT * from todo ORDER BY count desc limit 5').then(function (data) {
-		res.render('index',{mes:data});
-		});
-		*/
 	 });
 
 
-/*
-app.get("/users/:id",function(req,res,next){
-	res.send(req.params.id+"<br>"+req.params.username+"<br>"+req.params.password);
-});*/
-
-//loading the root 
-app.get('/trending', function (req, res) {   
-	db.any('SELECT * from todo ORDER BY count desc limit 5').then(function (data) {
-		res.render('index',{mes:data});
-		});
-	 });
-
+//when the user post a message 
 app.post('/sent', function (req, res) { 
-	str = req.body.message;
-	result=str.split(' ');
+	str = req.body.message; //storing into a var
+	result=str.split(' '); //parsing the sentence into words
 	var arrayLength = result.length;
-	var insertQuery;
-	var updateQuery;
-	var selectQuery;
+	var i;
 
-	
-	//to store the parsed words into the database and keep a count
-	for (var i = 0; i < arrayLength; i++) {
-		insertQuery="INSERT INTO todo(message,count) values ( \'"+String(result[i])+"\',1);";
-		updateQuery="Update todo set count=count+1 where message = \'"+String(result[i])+"\';";
-		selectQuery="SELECT count from todo where message = \'"+String(result[i])+"\';";
-	    /*
-
-		 console.log(String(result[i]));
-		 //searching if the message is repeated if not initialize to zero
-		db.any("SELECT count from todo where message = $1",[result[i]]).then(function (data) {
-		 if((data%1)!==0){
-		 	console.log(i);
-		 	console.log(String(result[i]));
-			db.any("Update todo set count=count+1 where message =$1",[String(result[i])]);
-		}
-		else{
-			console.log(i);
-			console.log(String(result[i]));
-			db.none("INSERT INTO todo(message,count) values ($1,1)",[String(result[i])]);//inserting it in the database
-		}
-		})
-	 	.catch(function (err) {
-	 	return next(err);
-	 });*/
-
-
-		 console.log(String(result[i]));
-		 //searching if the message is repeated if not initialize to zero
-		db.any("SELECT count from todo where message = $1",result[i]).then(function () {
-		 	console.log(i);
-		 	console.log(String(result[i]));
-			db.any("Update todo set count=count+1 where message =$1",result[i]);
-		})
-	 	.catch(function (err) {
-	 	return next(err);
-	 	});
-
-	 	db.none("SELECT count from todo where message = $1",result[i]).then(function () {
-		 	console.log(i);
-			console.log(String(result[i]));
-			db.none("INSERT INTO todo(message,count) values ($1,1)",result[i]);//inserting it in the database
-		})
-	 	.catch(function (err) {
-	 	return next(err);
-	 	});
-	 	
-	 
+	//to store the parsed words into the database
+	for (i = 0; i < arrayLength; i++) {
+		if(result[i])//omit all the blank vars
+			db.none("INSERT INTO keywords(message,date) values ($1,current_date)",result[i]);//inserting it in db with currdate
 	}
+
 	//to post in the chats
-	db.none('INSERT INTO chats(message) values ($1)',str).then(function () {
-		res.redirect('/');
+	db.none('INSERT INTO chats(message,date) values ($1,current_date)',str).then(function () {
+		res.redirect('/');//sending user back to the root
 	})
 	
 	});
 
-	
-	
 	
 
 app.listen(3000, function () {   

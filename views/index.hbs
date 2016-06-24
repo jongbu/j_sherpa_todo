@@ -1,44 +1,30 @@
-<!--<h1>All Users</h1>
-<ul>
-	{{#each data}}
-		<li><a href="/users/{{this.id}}">{{this.username}}</a></li>
-	{{/each}}
-</ul>
-
-<form action="/users" method="POST">
-	<input type="text" placeholder="username" name="username">
-	<input type="password" placeholder="password" name="password">
-	<input type="submit">
-
-</form>-->
 
 	<div id="wrapper">
 	<div class="container">
-	<div class="alert alert-info">
-	<div align="center" style="padding:5px;"><span class="badge">Trending Keywords</span></div>	
- 			{{#each mes}}
- 			<button href="/trending" type="button" class="btn btn-default">
+	<ul class="nav nav-tabs">
+    <li class="active"><a href="#">Chats</a></li>
+    <li style="float:right">
+    		{{#each mes}}
+ 			<button type="button" class="btn btn-success">
 			{{this.message}}</button>
-			{{/each}}	
-			</div>
- 		<div class="jumbotron">
- 			<div align="center" style="padding:5px;"><span class="badge">Chats</span></div>	
-			{{#each chats}}
+			{{/each}}
+	</li>
+  	</ul>
+ 	<div class="jumbotron">
+  			{{#each chats}}
  			<div class="alert alert-info">
 			{{this.message}}</div>
-			{{/each}}	
- 		</div>
- 	</div>
- 	</div>
-
-	{{{body}}}
-	 <footer class="footer">
-    <div class="container">
-	    <div align="center">
+			{{/each}}
+		</div>
+		<div id="footer" align="center">
 			<form action="/sent" method="POST" class="form-group" >
 			 <input type="text" name="message">
 			 <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-envelope"></span></button>
 			</form>
-		</div>
-    </div>
+    	</div>
+ 	</div>
+
+ 	</div>
+	 <footer >
+  
 </footer>
