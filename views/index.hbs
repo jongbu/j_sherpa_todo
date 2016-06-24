@@ -4,10 +4,12 @@
 	<ul class="nav nav-tabs">
     <li class="active"><a href="#">Chats</a></li>
     <li style="float:right">
+    
     		{{#each mes}}
- 			<button type="button" class="btn btn-success">
+ 			<button type="button" class="btn btn-success" onclick="google(\'' +{{this.message}}+ '\')">
 			{{this.message}}</button>
 			{{/each}}
+			
 	</li>
   	</ul>
  	<div class="jumbotron">

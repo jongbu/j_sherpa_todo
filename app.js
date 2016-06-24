@@ -2,7 +2,6 @@ var express = require('express');
 var bodyp=require('body-parser');
 var promise = require('bluebird');
 var path = require('path');
-var str;
 var result;
 var temp;
 
@@ -56,7 +55,7 @@ app.post('/query', function (req, res) {
 
 //when the user post a message 
 app.post('/sent', function (req, res) { 
-	str = req.body.message; //storing into a var
+	var str = req.body.message; //storing into a var
 	result=str.split(' '); //parsing the sentence into words
 	var arrayLength = result.length;
 	var i;
@@ -74,7 +73,13 @@ app.post('/sent', function (req, res) {
 	
 	});
 
-	
+//to open google
+function google(myid){
+	var temp="https://www.google.com/#q=";
+	var str=myid;
+	var s=temp+str;
+	window.open(s);
+}
 
 app.listen(3000, function () {   
 	console.log('Inspiration app listening on port 3000!'); });
